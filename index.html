@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XBoxAi</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+scrollbar-width:thin;
+scrollbar-color:#00ffcc #081018;
+}
+
+::-webkit-scrollbar{
+width:8px;
+}
+
+::-webkit-scrollbar-track{
+background:#081018;
+}
+
+::-webkit-scrollbar-thumb{
+background:linear-gradient(
+180deg,
+#00ffcc,
+#0066ff
+);
+border-radius:20px;
+}
+
+body{
+font-family:'Orbitron',sans-serif;
+background:#030712;
+color:white;
+height:100dvh;
+overflow:hidden;
+display:flex;
+}
+
+/* BG */
+
+.bg{
+position:fixed;
+inset:0;
+background:
+radial-gradient(circle at top,#00ffcc22,transparent 40%),
+radial-gradient(circle at bottom,#0066ff22,transparent 40%),
+#030712;
+z-index:-2;
+}
+
+.grid{
+position:fixed;
+inset:0;
+background-image:
+linear-gradient(#00ffcc11 1px,transparent 1px),
+linear-gradient(90deg,#00ffcc11 1px,transparent 1px);
+background-size:40px 40px;
+animation:grid 10s linear infinite;
+z-index:-1;
+}
+
+@keyframes grid{
+from{
+transform:translateY(0);
+}
+to{
+transform:translateY(40px);
+}
+}
+
+/* SIDEBAR */
+
+.sidebar{
+width:280px;
+background:#081018cc;
+backdrop-filter:blur(20px);
+border-right:1px solid #00ffcc33;
+padding:20px;
+overflow-y:auto;
+}
+
+.logo{
+font-size:30px;
+color:#00ffcc;
+text-shadow:0 0 20px #00ffcc;
+margin-bottom:20px;
+}
+
+.memory{
+background:#0f1720;
+padding:15px;
+border-radius:15px;
+margin-bottom:10px;
+border:1px solid #00ffcc22;
+font-size:13px;
+word-break:break-word;
+}
+
+/* MAIN */
+
+.main{
+flex:1;
+display:flex;
+flex-direction:column;
+overflow:hidden;
+}
+
+.header{
+height:70px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 20px;
+border-bottom:1px solid #00ffcc22;
+background:#08101888;
+backdrop-filter:blur(20px);
+}
+
+.dot{
+width:10px;
+height:10px;
+border-radius:50%;
+background:#00ff66;
+box-shadow:0 0 10px #00ff66;
+}
+
+.status{
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+/* CHAT */
+
+.chat{
+flex:1;
+padding:20px;
+overflow-y:auto;
+display:flex;
+flex-direction:column;
+}
+
+.msg{
+max-width:80%;
+padding:18px;
+margin-bottom:20px;
+border-radius:20px;
+line-height:1.7;
+white-space:pre-wrap;
+word-break:break-word;
+animation:fade .3s ease;
+}
+
+.user{
+align-self:flex-end;
+background:linear-gradient(
+135deg,
+#00ffcc33,
+#0066ff33
+);
+border:1px solid #00ffcc55;
+}
+
+.ai{
+align-self:flex-start;
+background:#0b1118;
+border:1px solid #00ffcc22;
+}
+
+@keyframes fade{
+from{
+opacity:0;
+transform:translateY(10px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+/* INPUT */
+
+.input-area{
+display:flex;
+gap:10px;
+padding:15px;
+border-top:1px solid #00ffcc22;
+background:#08101888;
+}
+
+input{
+flex:1;
+padding:15px;
+border:none;
+outline:none;
+border-radius:18px;
+background:#0b1118;
+border:1px solid #00ffcc33;
+color:white;
+font-family:'Orbitron',sans-serif;
+}
+
+button{
+padding:15px 25px;
+border:none;
+border-radius:18px;
+background:linear-gradient(
+135deg,
+#00ffcc,
+#0066ff
+);
+font-weight:bold;
+cursor:pointer;
+font-family:'Orbitron',sans-serif;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+.sidebar{
+width:110px;
+padding:10px;
+}
+
+.logo{
+font-size:16px;
+}
+
+.memory{
+font-size:9px;
+padding:8px;
+}
+
+.header{
+font-size:11px;
+}
+
+.msg{
+max-width:95%;
+font-size:12px;
+padding:12px;
+}
+
+input{
+font-size:12px;
+padding:12px;
+}
+
+button{
+font-size:10px;
+padding:12px;
+}
+
+}
+
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+<div class="grid"></div>
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+<div class="logo">
+⚡ XBoxAi
+</div>
+
+<h3 style="margin-bottom:15px;color:#00ffcc;">
+MEMORY
+</h3>
+
+<div id="memoryList"></div>
+
+</div>
+
+<!-- MAIN -->
+
+<div class="main">
+
+<div class="header">
+
+<div>
+XBoxAi Neural Interface
+</div>
+
+<div class="status">
+
+<div class="dot"></div>
+
+ONLINE
+
+</div>
+
+</div>
+
+<div class="chat" id="chat">
+
+<div class="msg ai">
+Halo User.
+
+Saya XBoxAi Neural System.
+</div>
+
+</div>
+
+<div class="input-area">
+
+<input
+id="prompt"
+placeholder="Ketik pesan...">
+
+<button onclick="sendMsg()">
+SEND
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+/* MEMORY */
+
+let memories = JSON.parse(
+localStorage.getItem("xboxai_memory") || "[]"
+);
+
+const memoryList =
+document.getElementById("memoryList");
+
+function renderMemory(){
+
+memoryList.innerHTML = "";
+
+memories.slice().reverse().forEach(m => {
+
+let div = document.createElement("div");
+
+div.className = "memory";
+
+div.innerText = m;
+
+memoryList.appendChild(div);
+
+});
+
+}
+
+renderMemory();
+
+function saveMemory(text){
+
+memories.push(text);
+
+localStorage.setItem(
+"xboxai_memory",
+JSON.stringify(memories)
+);
+
+renderMemory();
+
+}
+
+/* CHAT */
+
+const chat =
+document.getElementById("chat");
+
+function addMsg(text,type){
+
+let div = document.createElement("div");
+
+div.className = "msg " + type;
+
+div.innerHTML = text;
+
+chat.appendChild(div);
+
+chat.scrollTop = chat.scrollHeight;
+
+return div;
+
+}
+
+/* SEND */
+
+async function sendMsg(){
+
+let input =
+document.getElementById("prompt");
+
+let text = input.value.trim();
+
+if(!text) return;
+
+addMsg(text,"user");
+
+saveMemory(text);
+
+input.value = "";
+
+let typing = addMsg(
+"XBoxAi sedang berpikir...",
+"ai"
+);
+
+try{
+
+let res = await fetch("/api/chat",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+messages:[
+
+{
+role:"system",
+content:
+`
+Kamu adalah XBoxAi futuristic assistant.
+
+Memory:
+${memories.join("\n")}
+`
+},
+
+{
+role:"user",
+content:text
+}
+
+]
+
+})
+
+});
+
+let data = await res.json();
+
+typing.remove();
+
+let reply =
+data.choices?.[0]?.message?.content
+|| "ERROR";
+
+addMsg(reply,"ai");
+
+}catch(err){
+
+typing.remove();
+
+addMsg(
+"Connection failed.",
+"ai"
+);
+
+}
+
+}
+
+/* ENTER */
+
+document
+.getElementById("prompt")
+.addEventListener("keydown",e=>{
+
+if(e.key==="Enter"){
+sendMsg();
+}
+
+});
+
+</script>
+
+</body>
+</html>
