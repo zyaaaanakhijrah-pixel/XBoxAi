@@ -19,6 +19,7 @@ scrollbar-color:#00ffcc #081018;
 
 ::-webkit-scrollbar{
 width:8px;
+height:8px;
 }
 
 ::-webkit-scrollbar-track{
@@ -43,7 +44,7 @@ overflow:hidden;
 display:flex;
 }
 
-/* BG */
+/* BACKGROUND */
 
 .bg{
 position:fixed;
@@ -78,12 +79,14 @@ transform:translateY(40px);
 /* SIDEBAR */
 
 .sidebar{
-width:280px;
+width:300px;
+height:100dvh;
 background:#081018cc;
 backdrop-filter:blur(20px);
 border-right:1px solid #00ffcc33;
 padding:20px;
 overflow-y:auto;
+flex-shrink:0;
 }
 
 .logo{
@@ -93,6 +96,31 @@ text-shadow:0 0 20px #00ffcc;
 margin-bottom:20px;
 }
 
+.section{
+margin-bottom:25px;
+}
+
+.section h3{
+margin-bottom:10px;
+color:#00ffcc;
+}
+
+/* API */
+
+.api-box{
+background:#0f1720;
+padding:15px;
+border-radius:15px;
+border:1px solid #00ffcc22;
+}
+
+.api-box input{
+width:100%;
+margin-top:10px;
+}
+
+/* MEMORY */
+
 .memory{
 background:#0f1720;
 padding:15px;
@@ -100,6 +128,7 @@ border-radius:15px;
 margin-bottom:10px;
 border:1px solid #00ffcc22;
 font-size:13px;
+line-height:1.5;
 word-break:break-word;
 }
 
@@ -109,18 +138,28 @@ word-break:break-word;
 flex:1;
 display:flex;
 flex-direction:column;
+height:100dvh;
 overflow:hidden;
 }
 
+/* HEADER */
+
 .header{
-height:70px;
+height:75px;
 display:flex;
 align-items:center;
 justify-content:space-between;
-padding:0 20px;
+padding:0 25px;
 border-bottom:1px solid #00ffcc22;
 background:#08101888;
 backdrop-filter:blur(20px);
+flex-shrink:0;
+}
+
+.status{
+display:flex;
+align-items:center;
+gap:10px;
 }
 
 .dot{
@@ -131,20 +170,16 @@ background:#00ff66;
 box-shadow:0 0 10px #00ff66;
 }
 
-.status{
-display:flex;
-align-items:center;
-gap:10px;
-}
-
 /* CHAT */
 
 .chat{
 flex:1;
 padding:20px;
 overflow-y:auto;
+overflow-x:hidden;
 display:flex;
 flex-direction:column;
+scroll-behavior:smooth;
 }
 
 .msg{
@@ -155,7 +190,7 @@ border-radius:20px;
 line-height:1.7;
 white-space:pre-wrap;
 word-break:break-word;
-animation:fade .3s ease;
+animation:fade 0.3s ease;
 }
 
 .user{
@@ -189,26 +224,32 @@ transform:translateY(0);
 
 .input-area{
 display:flex;
-gap:10px;
+gap:15px;
 padding:15px;
 border-top:1px solid #00ffcc22;
 background:#08101888;
+backdrop-filter:blur(20px);
+flex-shrink:0;
 }
 
 input{
 flex:1;
-padding:15px;
-border:none;
-outline:none;
-border-radius:18px;
+padding:16px;
 background:#0b1118;
 border:1px solid #00ffcc33;
+border-radius:18px;
+outline:none;
 color:white;
 font-family:'Orbitron',sans-serif;
 }
 
+input:focus{
+border-color:#00ffcc;
+box-shadow:0 0 15px #00ffcc55;
+}
+
 button{
-padding:15px 25px;
+padding:16px 24px;
 border:none;
 border-radius:18px;
 background:linear-gradient(
@@ -219,44 +260,97 @@ background:linear-gradient(
 font-weight:bold;
 cursor:pointer;
 font-family:'Orbitron',sans-serif;
+color:black;
+transition:0.3s;
+}
+
+button:hover{
+transform:scale(1.03);
+box-shadow:0 0 15px #00ffcc88;
+}
+
+.typing{
+opacity:0.5;
+animation:blink 1s infinite;
+}
+
+@keyframes blink{
+50%{
+opacity:0.2;
+}
 }
 
 /* MOBILE */
 
-@media(max-width:768px){
+@media (max-width:768px){
+
+body{
+flex-direction:row;
+}
 
 .sidebar{
-width:110px;
+width:115px;
 padding:10px;
 }
 
 .logo{
 font-size:16px;
+margin-bottom:15px;
+}
+
+.section h3{
+font-size:10px;
 }
 
 .memory{
 font-size:9px;
 padding:8px;
+border-radius:10px;
+}
+
+.api-box{
+padding:8px;
+}
+
+.api-box input{
+font-size:10px;
+padding:8px;
+}
+
+.main{
+flex:1;
 }
 
 .header{
-font-size:11px;
+height:55px;
+padding:0 10px;
+font-size:10px;
+}
+
+.chat{
+padding:10px;
 }
 
 .msg{
 max-width:95%;
 font-size:12px;
 padding:12px;
+line-height:1.5;
+}
+
+.input-area{
+padding:8px;
+gap:8px;
 }
 
 input{
-font-size:12px;
 padding:12px;
+font-size:12px;
 }
 
 button{
-font-size:10px;
 padding:12px;
+font-size:10px;
 }
 
 }
@@ -276,11 +370,34 @@ padding:12px;
 ⚡ XBoxAi
 </div>
 
-<h3 style="margin-bottom:15px;color:#00ffcc;">
-MEMORY
-</h3>
+<div class="section">
+
+<h3>🔑 OPENAI KEY</h3>
+
+<div class="api-box">
+
+<input
+type="password"
+id="apikey"
+placeholder="sk-xxxxxxxx">
+
+<button
+style="margin-top:10px;width:100%;"
+onclick="saveApiKey()">
+SAVE
+</button>
+
+</div>
+
+</div>
+
+<div class="section">
+
+<h3>🧠 MEMORY</h3>
 
 <div id="memoryList"></div>
+
+</div>
 
 </div>
 
@@ -329,6 +446,28 @@ SEND
 </div>
 
 <script>
+
+/* API KEY */
+
+let API_KEY =
+localStorage.getItem("xboxai_openai_key") || "";
+
+document.getElementById("apikey").value =
+API_KEY;
+
+function saveApiKey(){
+
+API_KEY =
+document.getElementById("apikey").value;
+
+localStorage.setItem(
+"xboxai_openai_key",
+API_KEY
+);
+
+alert("OPENAI API KEY DISIMPAN");
+
+}
 
 /* MEMORY */
 
@@ -404,6 +543,14 @@ let text = input.value.trim();
 
 if(!text) return;
 
+if(!API_KEY){
+
+alert("Masukkan OPENAI API KEY dulu!");
+
+return;
+
+}
+
 addMsg(text,"user");
 
 saveMemory(text);
@@ -412,20 +559,27 @@ input.value = "";
 
 let typing = addMsg(
 "XBoxAi sedang berpikir...",
-"ai"
+"ai typing"
 );
 
 try{
 
-let res = await fetch("/api/chat",{
+let res = await fetch(
+
+"https://api.openai.com/v1/chat/completions",
+
+{
 
 method:"POST",
 
 headers:{
-"Content-Type":"application/json"
+"Content-Type":"application/json",
+"Authorization":"Bearer " + API_KEY
 },
 
 body:JSON.stringify({
+
+model:"gpt-4.1-mini",
 
 messages:[
 
